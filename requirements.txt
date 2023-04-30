@@ -1,0 +1,10 @@
+python-telegram-bot
+pydantic
+starlette
+nest_asyncio
+
+# db
+databases[postgresql]
+SQLAlchemy
+alembic
+psycopg2
