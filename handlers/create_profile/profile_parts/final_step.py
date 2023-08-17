@@ -1,8 +1,6 @@
 import logging
-import random
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes, ConversationHandler
-from core.config import ADMIN_IDS
 from db.repositories.profiles import ProfilesRepository
 from db.tasks import get_repository
 from handlers.common.users import get_user
@@ -63,7 +61,6 @@ async def start_over(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return await set_name_step(update, context)
 
 
-
 async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user: UserPublic = await get_user(update, context)
     profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
@@ -75,7 +72,7 @@ async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_id=user.id
     )
 
-    ## Отправка уведомления о новой регистрации админу
+    # # Отправка уведомления о новой регистрации админу
     # profile = await show_profile.get_profile_description(user.profile)
     # selected_admin = random.choice(ADMIN_IDS)
 
@@ -88,7 +85,7 @@ async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text='Теперь вы можете всё!)',
+        text='Теперь вы можете всё! 💪',
     )
     await menu.menu(update, context)
 
