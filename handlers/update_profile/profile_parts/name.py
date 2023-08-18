@@ -25,7 +25,7 @@ async def set_name_step(
     name = escape_markdownv2(user.profile.name)
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=f'*Ваше текущее имя \- {name}*\n_\(напишите новое имя или нажмите  ⏩ /skip \)_',
+        text=f'*Ваше текущее имя \- {name}*\n_\(напишите новое имя или нажмите  /skip ⏩   \)_',
         parse_mode="MarkdownV2",
     )
     return step

@@ -36,6 +36,7 @@ class Profile:
 
 async def get_profile_description(user_profile: ProfilePublic):
     profile = user_profile
+    profile.name = escape_markdownv2(profile.name)
     profile.bio = escape_markdownv2(profile.bio)
     if profile.city != profile.region:
         profile.city = escape_markdownv2(
@@ -50,7 +51,7 @@ async def get_profile_description(user_profile: ProfilePublic):
     return Profile(user_profile.image, DESCRIPTION.format(**profile.dict()))
 
 
-async def show_profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def show_profile(update: Update, context: ContextTypes.DEFAULT_TYPE, dry_run=False):
     user: UserPublic = await get_user(update, context)
     if not user or not user.profile:
         await context.bot.send_message(
@@ -68,12 +69,14 @@ async def show_profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text='Не могу найти ваше фото... Обновите, пожалйста, профиль или обратитесь к администратору',
         )
     else:
-        await context.bot.send_photo(
-                chat_id=update.effective_user.id,
-                photo=image.file_id,
-                caption=profile.caption,
-                parse_mode="MarkdownV2",
-            )
+        if not dry_run:
+            await context.bot.send_photo(
+                    chat_id=update.effective_user.id,
+                    photo=image.file_id,
+                    caption=profile.caption,
+                    parse_mode="MarkdownV2",
+                )
+    return image, profile.caption
 
     # TODO Если фото нет и статус new - вернуть к первому шагу
     # TODO если partially - вернуть к шагу с фото

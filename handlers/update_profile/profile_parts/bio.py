@@ -31,7 +31,7 @@ async def set_bio_step(
     )
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text="*Ваше опиcание профиля выше:*\n_\(укажите новое или нажмите  ⏩ /skip \)_",
+        text="*Ваше опиcание профиля выше:*\n_\(укажите новое или нажмите  /skip ⏩   \)_",
         parse_mode="MarkdownV2",
     )
 

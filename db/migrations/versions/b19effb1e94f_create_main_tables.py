@@ -62,6 +62,7 @@ def create_users_table() -> None:
         sa.Column("is_bot", sa.Boolean(), nullable=False),
         sa.Column("link", sa.Text, nullable=True),
         sa.Column("is_premium", sa.Boolean(), nullable=True),
+        sa.Column("is_banned", sa.Boolean(), nullable=True),
         *timestamps(),
     )
     op.execute(
@@ -127,18 +128,19 @@ def create_date_offers_table() -> None:
     )
 
 
-def create_date_respones_table() -> None:
+def create_date_responses_table() -> None:
     op.create_table(
-        "date_respones",
+        "date_responses",
         sa.Column("inviter", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
         sa.Column("responder", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
+        sa.Column("message_id", sa.Text, index=True, nullable=True),
         *timestamps(indexed=True),
     )
     op.execute(
         """
-        CREATE TRIGGER update_date_respones_modtime
+        CREATE TRIGGER update_date_responses_modtime
             BEFORE UPDATE
-            ON date_respones
+            ON date_responses
             FOR EACH ROW
         EXECUTE PROCEDURE update_updated_at_column();
         """
@@ -150,11 +152,11 @@ def upgrade() -> None:
     create_users_table()
     create_profiles_table()
     create_date_offers_table()
-    create_date_respones_table()
+    create_date_responses_table()
 
 
 def downgrade() -> None:
-    op.drop_table("date_respones")
+    op.drop_table("date_responses")
     op.drop_table("date_offers")
     op.drop_table("profiles")
     op.drop_table("users")

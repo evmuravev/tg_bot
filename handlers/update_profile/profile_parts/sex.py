@@ -36,7 +36,7 @@ async def set_sex_step(
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=f"*Ваш пол \- {sex}:*\n_\(укажите исправление или нажмите  ⏩ /skip \)_",
+        text=f"*Ваш пол \- {sex}:*\n_\(укажите исправление или нажмите  /skip ⏩   \)_",
         reply_markup=reply_markup,
         parse_mode="MarkdownV2",
     )

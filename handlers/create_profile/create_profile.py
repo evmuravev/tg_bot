@@ -34,10 +34,17 @@ async def create_profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
         case UserPublic(profile=ProfilePublic(status=ProfileStatus.completed)):
             await context.bot.send_message(
                 chat_id=update.effective_user.id,
-                text='Ваш профиль уже существует! \nВы можете обновить профиль, если пожелаете!)',
+                text='Ваш профиль уже существует! \nВы можете обновить профиль, если пожелаете!',
             )
             return
         case UserPublic(profile=None):
+            if user.is_banned:
+                await context.bot.answer_callback_query(
+                    callback_query_id=update.callback_query.id,
+                    show_alert=True,
+                    text='Вы были забанены и больше не можете создавать профиль!',
+                )
+                return
             profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
             profile_create = ProfileCreate(user_id=user.id)
             await profile_repo.create_profile_for_user(
@@ -45,7 +52,7 @@ async def create_profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             await context.bot.send_message(
                 chat_id=update.effective_user.id,
-                text='🙌 Ура! Профиль успешно создан. \nДавайте его заполним!',
+                text='🙌 Ура! Профиль успешно создан\. \nДавайте его заполним!',
                 reply_markup=ReplyKeyboardRemove(),
 
             )

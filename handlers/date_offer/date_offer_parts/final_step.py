@@ -70,7 +70,7 @@ async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
     options = [
         [
             InlineKeyboardButton("✨ Откликнуться!", callback_data=f'lets_go:{str(user.id)}'),
-            InlineKeyboardButton("Пожаловаться 😒", callback_data=f'complain::{str(user.id)}'),
+            InlineKeyboardButton("Пожаловаться 😒", callback_data=f'complain:{str(user.id)}'),
         ]
     ]
     keyboard = [*options]

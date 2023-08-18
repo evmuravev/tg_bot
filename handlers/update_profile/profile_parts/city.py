@@ -54,13 +54,13 @@ async def send_region_page(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
     if update.message:
         await update.message.reply_text(
-            text=f"*Ваш текущий город \- {full_city}:*\n_\(укажите исправление или нажмите  ⏩ /skip \)_",
+            text=f"*Ваш текущий город \- {full_city}:*\n_\(укажите исправление или нажмите  /skip ⏩   \)_",
             reply_markup=region_markup,
             parse_mode="MarkdownV2"
         )
     else:
         await update.callback_query.edit_message_text(
-            text=f"*Ваш текущий город \- {full_city}:*\n_\(укажите исправление или нажмите  ⏩ /skip \)_",
+            text=f"*Ваш текущий город \- {full_city}:*\n_\(укажите исправление или нажмите  /skip ⏩   \)_",
             reply_markup=region_markup,
             parse_mode="MarkdownV2"
         )

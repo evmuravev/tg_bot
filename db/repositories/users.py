@@ -20,7 +20,8 @@ REGISTER_NEW_USER_QUERY = """
         language_code,
         is_bot,
         link,
-        is_premium
+        is_premium,
+        is_banned
     )
     VALUES (
         :id,
@@ -30,7 +31,8 @@ REGISTER_NEW_USER_QUERY = """
         :language_code,
         :is_bot,
         :link,
-        :is_premium
+        :is_premium,
+        :is_banned
     )
     RETURNING *;
 """
@@ -38,6 +40,13 @@ REGISTER_NEW_USER_QUERY = """
 UPDATE_USERNAME_QUERY = """
     UPDATE users
     SET username = :username
+    WHERE id = :user_id
+    RETURNING *;
+"""
+
+UPDATE_IS_BANNED_QUERY = """
+    UPDATE users
+    SET is_banned = :is_banned
     WHERE id = :user_id
     RETURNING *;
 """
@@ -80,6 +89,14 @@ class UsersRepository(BaseRepository):
         updated_profile = await self.db.fetch_one(
             query=UPDATE_USERNAME_QUERY,
             values={"user_id": user.id, "username": user.username},
+        )
+
+        return UserInDB(**updated_profile)
+
+    async def update_is_banned(self, *, user: UserUpdate) -> UserInDB:
+        updated_profile = await self.db.fetch_one(
+            query=UPDATE_USERNAME_QUERY,
+            values={"user_id": user.id, "is_banned": user.is_banned},
         )
 
         return UserInDB(**updated_profile)

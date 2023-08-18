@@ -13,6 +13,7 @@ class UserBase(CoreModel):
     is_bot: bool
     link: Optional[str]
     is_premium: Optional[bool]
+    is_banned: Optional[bool]
 
 
 class UserCreate(UserBase):

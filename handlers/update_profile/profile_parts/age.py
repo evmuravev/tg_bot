@@ -24,7 +24,7 @@ async def set_age_step(
     age = str(user.profile.age)
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=f"*Ваш возраст \- {age}:*\n_\(укажите исправление или нажмите  ⏩ /skip \)_",
+        text=f"*Ваш возраст \- {age}:*\n_\(укажите исправление или нажмите  /skip ⏩ \)_",
         parse_mode="MarkdownV2",
     )
     return step

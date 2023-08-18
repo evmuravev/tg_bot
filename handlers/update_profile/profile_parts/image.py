@@ -28,7 +28,7 @@ async def set_image_step(
     )
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text="*Ваше текущее фото выше:*\n_\(приложите новое или нажмите  ⏩ /skip \)_",
+        text="*Ваше текущее фото выше:*\n_\(приложите новое или нажмите  /skip ⏩   \)_",
         parse_mode="MarkdownV2",
     )
 
