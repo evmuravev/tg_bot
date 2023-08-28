@@ -1,5 +1,6 @@
 import logging
 from telegram import Update
+from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 from db.repositories.profiles import ProfilesRepository
 from db.tasks import get_repository
@@ -21,11 +22,19 @@ async def set_image_step(
         next_step=STEPS['IMAGE']
 ):
     user: UserPublic = await get_user(update, context)
-    await context.bot.send_photo(
+    try:
+        await context.bot.send_photo(
+                chat_id=update.effective_user.id,
+                photo=user.profile.image,
+                parse_mode="MarkdownV2",
+        )
+    except BadRequest as ex:
+        await context.bot.send_message(
             chat_id=update.effective_user.id,
-            photo=user.profile.image,
+            text="Фото отсутствует, приложите новое фото",
             parse_mode="MarkdownV2",
-    )
+        )
+        return next_step
     await context.bot.send_message(
         chat_id=update.effective_user.id,
         text="*Ваше текущее фото выше:*\n_\(приложите новое или нажмите  /skip ⏩   \)_",

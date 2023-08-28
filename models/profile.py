@@ -8,6 +8,7 @@ class ProfileStatus(str, Enum):
     new = "new"
     partially_completed = "partially_completed"
     completed = "completed"
+    deleted = "deleted"
 
     # NOT USED
     waiting_for_approval = "waiting_for_approval"

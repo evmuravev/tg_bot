@@ -30,6 +30,7 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
             show_alert=True,
             text='Вы еще не создали профиль!\nПерейдите в бот для создания',
         )
+        return
     if user.is_banned:
         await context.bot.answer_callback_query(
             callback_query_id=update.callback_query.id,

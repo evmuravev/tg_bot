@@ -12,13 +12,14 @@ GET_PROFILE_BY_USER_ID_QUERY = """
     SELECT *
     FROM profiles
     WHERE user_id = :user_id
-        AND status != 'rejected';
+        AND (status != 'rejected' AND status != 'deleted');
 """
 
 GET_PROFILE_BY_ID_QUERY = """
     SELECT *
     FROM profiles
-    WHERE id = :id;
+    WHERE id = :id
+        AND (status != 'rejected' AND status != 'deleted');
 """
 
 UPDATE_PROFILE_QUERY = """
@@ -35,7 +36,7 @@ UPDATE_PROFILE_QUERY = """
         bio      = :bio,
         status   = :status
     WHERE user_id = :user_id
-        AND status != 'rejected'
+        AND (status != 'rejected' AND status != 'deleted')
     RETURNING *;
 """
 

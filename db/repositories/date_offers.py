@@ -22,8 +22,9 @@ GET_PREVIOUS_DATE_OFFER_BY_PROFILE_ID_QUERY = """
     SELECT *
     FROM date_offers
     WHERE profile_id = :profile_id
+        AND message_id IS NOT NULL
     ORDER BY _updated_at DESC
-    LIMIT 1 OFFSET 1;
+    LIMIT 1;
 """
 
 UPDATE_DATE_OFFER_QUERY = '''

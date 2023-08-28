@@ -18,8 +18,9 @@ async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
         profile = [
             [
                 InlineKeyboardButton("🦸Обновить профиль", callback_data='update_profile'),
-                InlineKeyboardButton("🕺Показать профиль", callback_data='show_profile')
+                InlineKeyboardButton("🕺Показать профиль", callback_data='show_profile'),
             ],
+            [InlineKeyboardButton("❌ Удалить данные", callback_data='delete_profile')],
             [InlineKeyboardButton("💘 Назначить свидание", callback_data='date_offer')],
             [InlineKeyboardButton("⏩ Перейти в группу", url='https://t.me/+-LDB4eMeT202YmIy')],
         ]

@@ -12,7 +12,7 @@ from telegram.ext import (
 from db.tasks import get_repository
 from db.repositories.date_offers import DateOffersRepository
 from models.user import UserPublic
-from models.date_offer import DateOfferCreate
+from models.date_offer import DateOfferCreate, DateOfferPublic
 from handlers.date_offer.date_offer_parts import (
     expectations, where, when, bill_splitting, cancel, final_step
 )
@@ -31,10 +31,15 @@ async def date_offer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text='Вы еще не создали профиль!',
         )
     date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
-    date_offer_create = DateOfferCreate(profile_id=user.profile.id)
-    await date_offer_repo.create_date_offer_for_profile(
-        date_offer_create=date_offer_create
+    date_offer: DateOfferPublic = await date_offer_repo.get_date_offer_by_profile_id(
+        profile_id=user.profile.id
     )
+    if not date_offer or date_offer.message_id is not None:
+        date_offer_create = DateOfferCreate(profile_id=user.profile.id)
+        await date_offer_repo.create_date_offer_for_profile(
+            date_offer_create=date_offer_create
+        )
+
     return await where.set_where_step(update, context)
 
 
