@@ -1,6 +1,6 @@
 from typing import Optional
 
-from models.core import DateTimeModelMixin, IDModelMixin, CoreModel
+from models.core import DateTimeModelMixin, CoreModel
 from models.profile import ProfilePublic
 
 

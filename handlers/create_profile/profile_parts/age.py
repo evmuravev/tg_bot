@@ -62,7 +62,7 @@ async def set_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return await set_age_step(update, context)
 
-    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+    profile_repo = get_repository(ProfilesRepository, context)
     profile_update = {
         'age': age,
         'age_tag': age_tag

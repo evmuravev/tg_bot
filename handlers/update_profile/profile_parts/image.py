@@ -29,12 +29,14 @@ async def set_image_step(
                 parse_mode="MarkdownV2",
         )
     except BadRequest as ex:
+        logger.warning(ex)
         await context.bot.send_message(
             chat_id=update.effective_user.id,
             text="Фото отсутствует, приложите новое фото",
             parse_mode="MarkdownV2",
         )
         return next_step
+
     await context.bot.send_message(
         chat_id=update.effective_user.id,
         text="*Ваше текущее фото выше:*\n_\(приложите новое или нажмите  /skip ⏩   \)_",
@@ -58,7 +60,7 @@ async def set_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pool_timeout=60,
     )
 
-    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+    profile_repo = get_repository(ProfilesRepository, context)
     profile_update = {
         'image': file_id,
     }

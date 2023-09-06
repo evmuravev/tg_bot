@@ -44,9 +44,8 @@ async def delete_profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return STEPS['DELETE']
 
 
-async def confirm_deletion(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user: UserPublic = await get_user(update, context)
-    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+async def delete_profile_and_dates(user: UserPublic, context: ContextTypes.DEFAULT_TYPE):
+    profile_repo = get_repository(ProfilesRepository, context)
     profile_update = {
         'status': ProfileStatus.deleted
     }
@@ -55,12 +54,12 @@ async def confirm_deletion(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_id=user.id
     )
     # check if message from the user already exists
-    date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
-    date_offer: DateOfferPublic = await date_offer_repo.get_previous_date_offer_by_profile_id(
+    date_offer_repo = get_repository(DateOffersRepository, context)
+    date_offer: DateOfferPublic = await date_offer_repo.get_last_date_offer_by_profile_id(
         profile_id=user.profile.id
     )
     if date_offer and date_offer.message_id is not None:
-        # delete the previous message
+        # delete the last message
         try:
             await context.bot.delete_message(
                 chat_id=TELEGRAM_GROUP_ID,
@@ -68,6 +67,12 @@ async def confirm_deletion(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         except BadRequest as ex:
             logger.warning(ex)
+
+
+async def confirm_deletion(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = await get_user(update, context)
+
+    await delete_profile_and_dates(user, context)
 
     await context.bot.send_message(
         chat_id=update.effective_user.id,

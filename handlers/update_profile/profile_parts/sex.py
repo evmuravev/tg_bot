@@ -47,7 +47,7 @@ async def set_sex_step(
 async def set_sex(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.callback_query.from_user
     sex = update.callback_query.data
-    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+    profile_repo = get_repository(ProfilesRepository, context)
     profile_update = {
         'sex': sex
     }

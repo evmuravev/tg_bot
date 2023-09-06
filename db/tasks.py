@@ -1,6 +1,6 @@
 import logging
 from databases import Database
-from typing import Type
+from typing import TypeVar
 from telegram.ext._application import Application
 from telegram.ext import ContextTypes
 
@@ -36,5 +36,11 @@ def get_database(app: Application) -> Database:
     return app._db
 
 
-def get_repository(Repo_type: Type[BaseRepository], context: ContextTypes.DEFAULT_TYPE) -> Type[BaseRepository]:
+Repository = TypeVar("Repository")
+
+
+def get_repository(
+        Repo_type: Repository,
+        context: ContextTypes.DEFAULT_TYPE
+) -> Repository:
     return Repo_type(get_database(context.application))

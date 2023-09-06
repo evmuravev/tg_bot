@@ -30,7 +30,7 @@ async def date_offer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=update.effective_user.id,
             text='Вы еще не создали профиль!',
         )
-    date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
+    date_offer_repo = get_repository(DateOffersRepository, context)
     date_offer: DateOfferPublic = await date_offer_repo.get_date_offer_by_profile_id(
         profile_id=user.profile.id
     )

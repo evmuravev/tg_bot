@@ -10,7 +10,7 @@ async def register_new_user(
         context: ContextTypes.DEFAULT_TYPE
 ) -> UserPublic:
     new_user = UserCreate(**update.effective_user._get_attrs())
-    user_repo: UsersRepository = get_repository(UsersRepository, context)
+    user_repo = get_repository(UsersRepository, context)
     created_user = await user_repo.register_new_user(new_user=new_user)
 
     return created_user
@@ -20,6 +20,6 @@ async def get_user(
         update: Update,
         context: ContextTypes.DEFAULT_TYPE
 ) -> UserPublic:
-    user_repo: UsersRepository = get_repository(UsersRepository, context)
+    user_repo = get_repository(UsersRepository, context)
     user = await user_repo.get_user_by_id(id=update.effective_user.id)
     return user

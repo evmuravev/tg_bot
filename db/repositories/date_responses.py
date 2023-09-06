@@ -21,6 +21,7 @@ GET_DATE_RESPONSES_BY_RESPONDER_QUERY = """
     ;
 """
 
+
 class DateResponseRepository(BaseRepository):
     def __init__(self, db: Database) -> None:
         super().__init__(db)

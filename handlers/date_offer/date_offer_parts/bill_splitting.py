@@ -42,7 +42,7 @@ async def set_bill_splitting_step(
 async def set_bill_splitting(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user: UserPublic = await get_user(update, context)
     bill_splitting = update.callback_query.data
-    date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
+    date_offer_repo = get_repository(DateOffersRepository, context)
     date_offer_update = {
         'bill_splitting': bill_splitting
     }

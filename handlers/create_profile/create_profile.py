@@ -45,7 +45,7 @@ async def create_profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     text='Вы были забанены и больше не можете создавать профиль!',
                 )
                 return
-            profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+            profile_repo = get_repository(ProfilesRepository, context)
             profile_create = ProfileCreate(user_id=user.id)
             user.profile = await profile_repo.create_profile_for_user(
                 profile_create=profile_create

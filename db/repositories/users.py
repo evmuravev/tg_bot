@@ -21,7 +21,8 @@ REGISTER_NEW_USER_QUERY = """
         is_bot,
         link,
         is_premium,
-        is_banned
+        is_banned,
+        num_of_complains
     )
     VALUES (
         :id,
@@ -32,7 +33,8 @@ REGISTER_NEW_USER_QUERY = """
         :is_bot,
         :link,
         :is_premium,
-        :is_banned
+        :is_banned,
+        :num_of_complains
     )
     RETURNING *;
 """
@@ -51,6 +53,13 @@ UPDATE_IS_BANNED_QUERY = """
     RETURNING *;
 """
 
+UPDATE_NUM_OF_COMPLAINS_QUERY = """
+    UPDATE users
+    SET num_of_complains = num_of_complains + 1
+    WHERE id = :user_id
+    RETURNING *;
+"""
+
 
 class UsersRepository(BaseRepository):
     def __init__(self, db: Database) -> None:
@@ -58,7 +67,7 @@ class UsersRepository(BaseRepository):
         self.profiles_repo = ProfilesRepository(db)
 
     async def get_user_by_id(self, *,
-                             id: int, populate: bool = True) -> UserInDB:
+                             id: int, populate: bool = True) -> UserPublic:
         user_record = await self.db.fetch_one(
             query=GET_USER_BY_ID, values={"id": id}
         )
@@ -86,17 +95,25 @@ class UsersRepository(BaseRepository):
         )
 
     async def update_username(self, *, user: UserUpdate) -> UserInDB:
-        updated_profile = await self.db.fetch_one(
+        updated_user = await self.db.fetch_one(
             query=UPDATE_USERNAME_QUERY,
             values={"user_id": user.id, "username": user.username},
         )
 
-        return UserInDB(**updated_profile)
+        return UserInDB(**updated_user)
 
-    async def update_is_banned(self, *, user: UserUpdate) -> UserInDB:
-        updated_profile = await self.db.fetch_one(
-            query=UPDATE_USERNAME_QUERY,
-            values={"user_id": user.id, "is_banned": user.is_banned},
+    async def update_is_banned(self, *, user: UserInDB) -> UserInDB:
+        updated_user = await self.db.fetch_one(
+            query=UPDATE_IS_BANNED_QUERY,
+            values={"user_id": user.id, "is_banned": True},
         )
 
-        return UserInDB(**updated_profile)
+        return UserInDB(**updated_user)
+
+    async def inc_num_of_complains(self, *, user: UserPublic) -> UserInDB:
+        updated_user = await self.db.fetch_one(
+            query=UPDATE_NUM_OF_COMPLAINS_QUERY,
+            values={"user_id": user.id},
+        )
+
+        return UserInDB(**updated_user)

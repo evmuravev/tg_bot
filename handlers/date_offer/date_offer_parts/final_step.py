@@ -2,7 +2,7 @@ import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes, ConversationHandler
 from telegram.error import BadRequest
-from core.config import TELEGRAM_GROUP_ID
+from core.config import DATE_TOPIC_ID, TELEGRAM_GROUP_ID
 from db.repositories.date_offers import DateOffersRepository
 from db.tasks import get_repository
 from handlers.common.users import get_user
@@ -48,7 +48,7 @@ async def set_final_step(
 async def start_over(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user: UserPublic = await get_user(update, context)
-    date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
+    date_offer_repo = get_repository(DateOffersRepository, context)
 
     await date_offer_repo.update_date_offer(
         date_offer_update=DateOfferBase(),
@@ -65,8 +65,8 @@ async def start_over(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user: UserPublic = await get_user(update, context)
-    date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
-    image, caption = await show_date_offer(update, context, dry_run=True)
+    date_offer_repo = get_repository(DateOffersRepository, context)
+    image, caption, date_offer = await show_date_offer(update, context, dry_run=True)
     options = [
         [
             InlineKeyboardButton("✨ Откликнуться!", callback_data=f'lets_go:{str(user.id)}'),
@@ -77,9 +77,6 @@ async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     # check if message from the user already exists
-    date_offer: DateOfferPublic = await date_offer_repo.get_previous_date_offer_by_profile_id(
-        profile_id=user.profile.id
-    )
     if date_offer and date_offer.message_id is not None:
         # delete the previous message
         try:
@@ -95,7 +92,7 @@ async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=image.file_id,
         caption=caption,
         parse_mode="MarkdownV2",
-        reply_to_message_id=2,
+        reply_to_message_id=DATE_TOPIC_ID,
         reply_markup=reply_markup
     )
 

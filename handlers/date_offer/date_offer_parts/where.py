@@ -37,7 +37,7 @@ async def set_where(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user: UserPublic = await get_user(update, context)
     where = update.message.text
     if len(where) <= 300:
-        date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
+        date_offer_repo = get_repository(DateOffersRepository, context)
         date_offer_update = {
             'where': where,
         }

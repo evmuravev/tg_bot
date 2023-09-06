@@ -6,7 +6,6 @@ from telegram.ext import ContextTypes
 
 
 STEPS = {
-    'USERNAME': 0,
     'NAME': 1,
     'SEX': 2,
     'AGE': 3,
@@ -20,7 +19,6 @@ STEPS = {
 
 def get_next_step(current_step: int) -> Coroutine[Update, ContextTypes, int]:
     next_steps_map = {
-        STEPS['USERNAME']: part.name.set_name_step,
         STEPS['NAME']: part.sex.set_sex_step,
         STEPS['SEX']: part.age.set_age_step,
         STEPS['AGE']: part.city.set_city_step,

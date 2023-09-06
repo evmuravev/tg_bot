@@ -42,7 +42,7 @@ async def set_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pool_timeout=60,
     )
 
-    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+    profile_repo = get_repository(ProfilesRepository, context)
     profile_update = {
         'image': file_id,
     }

@@ -6,8 +6,8 @@ from telegram import (
 from telegram.ext import (
     ContextTypes,
 )
-
 from handlers.common.users import get_user
+
 from models.profile import ProfilePublic
 from models.user import UserPublic
 from utils.utils import add_age_postfix, escape_markdownv2
@@ -51,11 +51,10 @@ async def get_profile_description(user_profile: ProfilePublic):
     return Profile(user_profile.image, DESCRIPTION.format(**profile.dict()))
 
 
-async def show_profile(update: Update, context: ContextTypes.DEFAULT_TYPE, dry_run=False):
-    user: UserPublic = await get_user(update, context)
+async def show_profile(user: UserPublic, context: ContextTypes.DEFAULT_TYPE, dry_run=False):
     if not user or not user.profile:
         await context.bot.send_message(
-            chat_id=update.effective_user.id,
+            chat_id=user.id,
             text='Вы еще не создали профиль!',
         )
 
@@ -65,19 +64,19 @@ async def show_profile(update: Update, context: ContextTypes.DEFAULT_TYPE, dry_r
         image = await context.bot.get_file(profile.image)
     except error.BadRequest:
         await context.bot.send_message(
-            chat_id=update.effective_user.id,
+            chat_id=user.id,
             text='Не могу найти ваше фото... Обновите, пожалйста, профиль или обратитесь к администратору',
         )
-    else:
-        if not dry_run:
-            await context.bot.send_photo(
-                    chat_id=update.effective_user.id,
-                    photo=image.file_id,
-                    caption=profile.caption,
-                    parse_mode="MarkdownV2",
-                )
+
     return image, profile.caption
 
-    # TODO Если фото нет и статус new - вернуть к первому шагу
-    # TODO если partially - вернуть к шагу с фото
-    # TODO если approved - показать и предложить кнопку обновления
+
+async def show_profile_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user: UserPublic = await get_user(update, context)
+    image, caption = await show_profile(user, context)
+    await context.bot.send_photo(
+            chat_id=user.id,
+            photo=image.file_id,
+            caption=caption,
+            parse_mode="MarkdownV2",
+    )

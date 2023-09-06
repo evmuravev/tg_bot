@@ -1,18 +1,28 @@
 from telegram.ext import CallbackQueryHandler
 from handlers.show_profile import (
-    show_profile,
+    show_profile_handler,
 )
 from handlers.date_response import (
     date_response,
 )
 from handlers.complains import (
     date_complain,
-    profile_complain
+    date_complain_approve,
+    date_complain_decline,
+    date_profile_complain_approve,
+    profile_complain,
+    profile_complain_approve,
+    profile_complain_decline
 )
 
 CALLBACK_QUERY_HANDLERS = [
-    CallbackQueryHandler(show_profile, pattern='show_profile'),
-    CallbackQueryHandler(date_response, pattern=r'lets_go\:.*'),
-    CallbackQueryHandler(date_complain, pattern=r'date_complain\:.*'),
-    CallbackQueryHandler(profile_complain, pattern=r'profile_complain\:.*'),
+    CallbackQueryHandler(show_profile_handler, pattern='show_profile'),
+    CallbackQueryHandler(date_response, pattern='lets_go\:.*'),
+    CallbackQueryHandler(date_complain, pattern='date_complain\:.*'),
+    CallbackQueryHandler(date_complain_approve, pattern='date_complain_approve\:.*'),
+    CallbackQueryHandler(date_complain_decline, pattern='date_complain_decline\:.*'),
+    CallbackQueryHandler(date_profile_complain_approve, pattern='date_profile_complain_approve\:.*'),
+    CallbackQueryHandler(profile_complain, pattern='profile_complain\:.*'),
+    CallbackQueryHandler(profile_complain_approve, pattern='profile_complain_approve\:.*'),
+    CallbackQueryHandler(profile_complain_decline, pattern='profile_complain_decline\:.*'),
 ]

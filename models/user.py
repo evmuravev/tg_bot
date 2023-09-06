@@ -14,6 +14,7 @@ class UserBase(CoreModel):
     link: Optional[str]
     is_premium: Optional[bool]
     is_banned: Optional[bool]
+    num_of_complains: Optional[int] = 0
 
 
 class UserCreate(UserBase):
@@ -21,8 +22,7 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    id: int
-    username: str
+    pass
 
 
 class UserInDB(DateTimeModelMixin, UserBase):

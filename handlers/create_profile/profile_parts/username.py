@@ -25,7 +25,9 @@ async def set_username_step(
     context: ContextTypes.DEFAULT_TYPE,
     step=STEPS['USERNAME']
 ):
-    keyboard = [[InlineKeyboardButton("Продолжить 🏄", callback_data='set_username')]]
+    keyboard = [
+        [InlineKeyboardButton("Продолжить 🏄", callback_data='set_username')]
+    ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.send_message(
@@ -43,7 +45,7 @@ async def set_username(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not user.username:
         return await set_username_step(update, context)
 
-    user_repo: UsersRepository = get_repository(UsersRepository, context)
+    user_repo = get_repository(UsersRepository, context)
     await user_repo.update_username(
         user=UserUpdate(**user._get_attrs())
     )

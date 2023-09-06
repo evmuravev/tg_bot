@@ -3,9 +3,7 @@ from telegram.ext import ContextTypes
 
 from db.repositories.profiles import ProfilesRepository
 from db.tasks import get_repository
-from handlers.common.users import get_user
 from models.profile import ProfileStatus, ProfileUpdate
-from models.user import UserPublic
 
 
 async def verify(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -15,7 +13,7 @@ async def verify(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'reject': ProfileStatus.rejected
     }
 
-    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+    profile_repo = get_repository(ProfilesRepository, context)
     profile_update = {
         'status': statuses[status]
     }

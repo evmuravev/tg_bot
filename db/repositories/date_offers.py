@@ -18,7 +18,7 @@ GET_DATE_OFFER_BY_PROFILE_ID_QUERY = """
     LIMIT 1;
 """
 
-GET_PREVIOUS_DATE_OFFER_BY_PROFILE_ID_QUERY = """
+GET_LAST_DATE_OFFER_BY_PROFILE_ID_QUERY = """
     SELECT *
     FROM date_offers
     WHERE profile_id = :profile_id
@@ -74,13 +74,13 @@ class DateOffersRepository(BaseRepository):
                 return await self.populate_date_offer(date_offer=date_offer)
             return date_offer
 
-    async def get_previous_date_offer_by_profile_id(
+    async def get_last_date_offer_by_profile_id(
             self, *,
             profile_id: int,
             populate: bool = True
     ) -> DateOfferInDB:
         date_offer_record = await self.db.fetch_one(
-            query=GET_PREVIOUS_DATE_OFFER_BY_PROFILE_ID_QUERY,
+            query=GET_LAST_DATE_OFFER_BY_PROFILE_ID_QUERY,
             values={"profile_id": profile_id}
         )
 

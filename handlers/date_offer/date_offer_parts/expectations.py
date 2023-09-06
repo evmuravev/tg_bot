@@ -39,7 +39,7 @@ async def set_expectations(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user: UserPublic = await get_user(update, context)
     expectations = update.message.text
     if len(expectations) <= 1000:
-        date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
+        date_offer_repo = get_repository(DateOffersRepository, context)
         date_offer_update = {
             'expectations': expectations,
         }

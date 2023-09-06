@@ -18,6 +18,10 @@ POSTGRES_PORT = config("POSTGRES_PORT", cast=str, default="5432")
 POSTGRES_DB = config("POSTGRES_DB", cast=str, default="postgres")
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", cast=str)
 TELEGRAM_GROUP_ID = config("TELEGRAM_GROUP_ID", cast=str)
+DATE_TOPIC_ID = config("DATE_TOPIC_ID", cast=str)
+TELEGRAM_ADMIN_GROUP_ID = config("TELEGRAM_ADMIN_GROUP_ID", cast=str)
+COMPLAIN_TOPIC_ID = config("COMPLAIN_TOPIC_ID", cast=str)
+NEW_PROFILE_TOPIC_ID = config("NEW_PROFILE_TOPIC_ID", cast=str)
 
 DATABASE_URL = config(
   "DATABASE_URL",

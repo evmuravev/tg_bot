@@ -63,6 +63,7 @@ def create_users_table() -> None:
         sa.Column("link", sa.Text, nullable=True),
         sa.Column("is_premium", sa.Boolean(), nullable=True),
         sa.Column("is_banned", sa.Boolean(), nullable=True),
+        sa.Column("num_of_complains", sa.Integer, default=0),
         *timestamps(),
     )
     op.execute(
@@ -90,7 +91,6 @@ def create_profiles_table() -> None:
         sa.Column("bio", sa.Text, nullable=True),
         sa.Column("user_id", sa.BigInteger, sa.ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False),
         sa.Column("status", sa.Text, default='new', index=True),
-        sa.Column("public_comment", sa.Text, nullable=True),
         sa.Column("admins_comment", sa.Text, nullable=True),
         *timestamps(),
     )
@@ -147,15 +147,37 @@ def create_date_responses_table() -> None:
     )
 
 
+def create_complains_table() -> None:
+    op.create_table(
+        "complains",
+        sa.Column("id", sa.BigInteger, primary_key=True),
+        sa.Column("complainant", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
+        sa.Column("accused", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
+        sa.Column("message_id", sa.Text, index=True, nullable=True),
+        *timestamps(indexed=True),
+    )
+    op.execute(
+        """
+        CREATE TRIGGER update_complains_modtime
+            BEFORE UPDATE
+            ON complains
+            FOR EACH ROW
+        EXECUTE PROCEDURE update_updated_at_column();
+        """
+    )
+
+
 def upgrade() -> None:
     create_updated_at_trigger()
     create_users_table()
     create_profiles_table()
     create_date_offers_table()
     create_date_responses_table()
+    create_complains_table()
 
 
 def downgrade() -> None:
+    op.drop_table("complains")
     op.drop_table("date_responses")
     op.drop_table("date_offers")
     op.drop_table("profiles")

@@ -34,7 +34,7 @@ async def set_name_step(
 async def set_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
     name = update.message.text
-    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+    profile_repo = get_repository(ProfilesRepository, context)
     profile_update = {
         'name': name
     }

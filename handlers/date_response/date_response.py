@@ -1,9 +1,7 @@
-from dataclasses import dataclass
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Update,
-    error
 )
 from telegram.ext import (
     ContextTypes,
@@ -16,9 +14,8 @@ from db.tasks import get_repository
 from handlers.common.users import get_user
 from handlers.show_profile import show_profile
 from models.date_response import DateResponseCreate
-from models.profile import ProfilePublic, ProfileStatus
+from models.profile import ProfileStatus
 from models.user import UserPublic, UserUpdate
-
 
 
 async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -37,24 +34,26 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
             show_alert=True,
             text='Вы были забанены и больше не можете откликаться!',
         )
+        return
     else:
         # Проверка на непустой username
         if not update.effective_user.username:
             await context.bot.answer_callback_query(
                 callback_query_id=update.callback_query.id,
                 show_alert=True,
-                text='У вас не заполнен username (имя пользователя)!',
+                text='У вас не заполнен @username (имя пользователя)!',
             )
+            return
         else:
             # Обновить username при его несовпадении с базой
             if update.effective_user.username != user.username:
-                user_repo: UsersRepository = get_repository(UsersRepository, context)
+                user_repo = get_repository(UsersRepository, context)
                 user = await user_repo.update_username(
                     user=UserUpdate(**update.effective_user._get_attrs())
                 )
             # Отправка отклика
-            profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
-            date_response_repo: DateResponseRepository = get_repository(DateResponseRepository, context)
+            profile_repo = get_repository(ProfilesRepository, context)
+            date_response_repo = get_repository(DateResponseRepository, context)
 
             inviter = await profile_repo.get_profile_by_user_id(
                 user_id=int(update.callback_query.data.split(':')[1])
@@ -74,11 +73,11 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     text='Ваш отклик уже отправлен!',
                 )
             else:
-                image, caption = await show_profile(update, context, dry_run=True)
+                image, caption = await show_profile(user, context)
                 options = [
                     [
                         InlineKeyboardButton("✨ Начать общение!", url=f'https://t.me/{update.effective_user.username}'),
-                        InlineKeyboardButton("Пожаловаться 😒", callback_data=f'profile_complain:{str(inviter.id)}'),
+                        InlineKeyboardButton("Пожаловаться 😒", callback_data=f'profile_complain:{str(responder.id)}'),
                     ]
                 ]
                 keyboard = [*options]
@@ -86,7 +85,7 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_photo(
                     chat_id=inviter.user_id,
                     photo=image.file_id,
-                    caption=r'Новый отклик\! ' + caption,
+                    caption='Новый отклик\! ' + caption,
                     parse_mode="MarkdownV2",
                     reply_markup=reply_markup
                 )

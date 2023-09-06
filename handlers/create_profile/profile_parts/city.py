@@ -92,7 +92,7 @@ async def send_city_page(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     city_keyboard.append(navigation)
     city_markup = InlineKeyboardMarkup(city_keyboard)
     query = update.callback_query
-    region = context.user_data['selected_region'].replace('-', '\-')
+    region = context.user_data['selected_region'].replace('-', r'\-')
     await query.edit_message_text(
         text=f"_Выбранный регион {region}\._\nТеперь выберите город:",
         reply_markup=city_markup,
@@ -111,7 +111,7 @@ async def set_city(
     await query.answer()
     await query.edit_message_text(text=f"Ах чудесный город {city}!")
 
-    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+    profile_repo = get_repository(ProfilesRepository, context)
     profile_update = {
         'city': city,
         'region': region

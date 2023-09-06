@@ -47,7 +47,7 @@ async def set_when(
     user: UserPublic = await get_user(update, context)
     when = update.message.text
     if len(when) <= 100:
-        date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
+        date_offer_repo = get_repository(DateOffersRepository, context)
         date_offer_update = {
             'when': when,
         }

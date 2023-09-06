@@ -1,8 +1,9 @@
 import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes, ConversationHandler
+from handlers.common.users import get_user
 from handlers.menu import menu
-from handlers.show_profile import show_profile
+from handlers.show_profile import show_profile_handler
 from handlers.update_profile.common import (
     STEPS
 )
@@ -16,7 +17,7 @@ async def set_final_step(
     context: ContextTypes.DEFAULT_TYPE,
     step=STEPS['FINAL_STEP']
 ):
-    await show_profile(update, context)
+    await show_profile_handler(update, context)
 
     options = [
         [
@@ -28,7 +29,7 @@ async def set_final_step(
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text="*Так выглядит ваш обновленынй профиль\. Завершаем создание профиля\?*",
+        text="*Так выглядит ваш обновленный профиль\. Завершаем создание профиля\?*",
         reply_markup=reply_markup,
         parse_mode="MarkdownV2",
     )

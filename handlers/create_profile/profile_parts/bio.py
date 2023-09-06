@@ -32,7 +32,7 @@ async def set_bio(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
     bio = update.message.text
     if len(bio) <= 1000:
-        profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+        profile_repo = get_repository(ProfilesRepository, context)
         profile_update = {
             'bio': bio,
             'status': ProfileStatus.completed
