@@ -28,9 +28,3 @@ DATABASE_URL = config(
   cast=DatabaseURL,
   default=f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 )
-
-# TODO: вынести в отедльный файл, читать каждый раз при обращении к админам, чтобы можно было добавлять новых админов/модераторов без остановки бота
-ADMIN_IDS = [
-    5606717809,
-    # 205036349
-]

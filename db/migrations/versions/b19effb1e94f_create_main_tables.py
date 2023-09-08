@@ -154,6 +154,7 @@ def create_complains_table() -> None:
         sa.Column("complainant", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
         sa.Column("accused", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
         sa.Column("message_id", sa.Text, index=True, nullable=True),
+        sa.Column("status", sa.Text, index=True, nullable=True),
         *timestamps(indexed=True),
     )
     op.execute(

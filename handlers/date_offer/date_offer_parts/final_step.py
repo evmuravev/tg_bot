@@ -7,7 +7,7 @@ from db.repositories.date_offers import DateOffersRepository
 from db.tasks import get_repository
 from handlers.common.users import get_user
 from handlers.menu import menu
-from handlers.show_date_offer import show_date_offer
+from handlers.show_date_offer import show_date_offer_handler, show_date_offer
 from handlers.date_offer.common import (
     STEPS
 )
@@ -24,7 +24,7 @@ async def set_final_step(
     context: ContextTypes.DEFAULT_TYPE,
     step=STEPS['FINAL_STEP']
 ):
-    await show_date_offer(update, context)
+    await show_date_offer_handler(update, context)
 
     options = [
         [
@@ -65,24 +65,27 @@ async def start_over(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user: UserPublic = await get_user(update, context)
-    date_offer_repo = get_repository(DateOffersRepository, context)
-    image, caption, date_offer = await show_date_offer(update, context, dry_run=True)
+    date_offer_repo: DateOffersRepository = get_repository(DateOffersRepository, context)
+    image, caption, _ = await show_date_offer(user, context)
     options = [
         [
             InlineKeyboardButton("✨ Откликнуться!", callback_data=f'lets_go:{str(user.id)}'),
-            InlineKeyboardButton("Пожаловаться 😒", callback_data=f'date_complain:{str(user.id)}'),
+            InlineKeyboardButton("Пожаловаться 😒", callback_data=f'date_complain:{str(user.profile.id)}'),
         ]
     ]
     keyboard = [*options]
     reply_markup = InlineKeyboardMarkup(keyboard)
-
+    prev_date_offer = await date_offer_repo.get_last_date_offer_by_profile_id(
+        profile_id=user.profile.id,
+        populate=False
+    )
     # check if message from the user already exists
-    if date_offer and date_offer.message_id is not None:
+    if prev_date_offer:
         # delete the previous message
         try:
             await context.bot.delete_message(
                 chat_id=TELEGRAM_GROUP_ID,
-                message_id=date_offer.message_id
+                message_id=prev_date_offer.message_id
             )
         except BadRequest as ex:
             logger.warning(ex)

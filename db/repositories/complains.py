@@ -2,22 +2,31 @@ from typing import List
 from databases import Database
 from db.repositories.base import BaseRepository
 from db.repositories.profiles import ProfilesRepository
-from models.complain import ComplainCreate, ComplainInDB
+from models.complain import ComplainCreate, ComplainInDB, ComplainUpdate
 
 
 CREATE_DATE_COMPLAIN = """
-    INSERT INTO complains (complainant, accused, message_id)
-    VALUES (:complainant, :accused, :message_id)
+    INSERT INTO complains (complainant, accused, message_id, status)
+    VALUES (:complainant, :accused, :message_id, :status)
     RETURNING *;
 """
 
 
-GET_COMPLAIN = """
+GET_NEW_COMPLAIN = """
     SELECT *
     FROM complains
     WHERE complainant = :complainant
         AND accused = :accused
+        AND status = 'new'
     ;
+"""
+
+
+UPDATE_COMPLAIN_STATUS = """
+    UPDATE complains
+    SET status = :status
+    WHERE id = :id
+    RETURNING *;
 """
 
 
@@ -36,18 +45,32 @@ class ComplainRepository(BaseRepository):
             values=complain_create.dict()
         )
 
-        return complain
+        return ComplainInDB(**complain)
 
     async def get_complain(
             self, *,
             complainant_id: int,
             accused_id: int,
-    ) -> List[ComplainInDB]:
+    ) -> ComplainInDB:
         complain = await self.db.fetch_one(
-            query=GET_COMPLAIN,
+            query=GET_NEW_COMPLAIN,
             values={
                 "complainant": complainant_id,
                 "accused": accused_id
             }
         )
-        return complain
+        if complain:
+            return ComplainInDB(**complain)
+
+    async def update_status_complain(
+            self, *,
+            complain_update: ComplainUpdate,
+    ) -> ComplainInDB:
+        complain = await self.db.fetch_one(
+            query=UPDATE_COMPLAIN_STATUS,
+            values={
+                "id": complain_update.id,
+                "status": complain_update.status
+            }
+        )
+        return ComplainInDB(**complain)

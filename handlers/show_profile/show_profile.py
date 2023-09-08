@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import logging
 from telegram import (
     Update,
     error
@@ -11,6 +12,9 @@ from handlers.common.users import get_user
 from models.profile import ProfilePublic
 from models.user import UserPublic
 from utils.utils import add_age_postfix, escape_markdownv2
+
+
+logger = logging.getLogger()
 
 
 DESCRIPTION = """
@@ -51,12 +55,15 @@ async def get_profile_description(user_profile: ProfilePublic):
     return Profile(user_profile.image, DESCRIPTION.format(**profile.dict()))
 
 
-async def show_profile(user: UserPublic, context: ContextTypes.DEFAULT_TYPE, dry_run=False):
+async def show_profile(user: UserPublic, context: ContextTypes.DEFAULT_TYPE):
     if not user or not user.profile:
-        await context.bot.send_message(
-            chat_id=user.id,
-            text='Вы еще не создали профиль!',
-        )
+        try:
+            await context.bot.send_message(
+                chat_id=user.id,
+                text='Вы еще не создали профиль!',
+            )
+        except error.BadRequest as ex:
+            logger.warning(ex)
 
     profile = await get_profile_description(user.profile)
 

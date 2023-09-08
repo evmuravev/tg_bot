@@ -60,10 +60,8 @@ class ProfilesRepository(BaseRepository):
             values={"user_id": user_id}
         )
 
-        if not profile_record:
-            return None
-
-        return ProfileInDB(**profile_record)
+        if profile_record:
+            return ProfileInDB(**profile_record)
 
     async def get_profile_by_id(self, *, id: int) -> ProfileInDB:
         profile_record = await self.db.fetch_one(
@@ -71,10 +69,8 @@ class ProfilesRepository(BaseRepository):
             values={"id": id}
         )
 
-        if not profile_record:
-            return None
-
-        return ProfileInDB(**profile_record)
+        if profile_record:
+            return ProfileInDB(**profile_record)
 
     async def update_profile(self, *,
                              profile_update: ProfileUpdate,
