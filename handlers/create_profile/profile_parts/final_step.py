@@ -75,7 +75,7 @@ async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # # Отправка уведомления о новой регистрации админу
     reply_markup = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("Перенести в жалобы 😒", callback_data=f'profile_complain:{str(user.id)}')]]
+        [[InlineKeyboardButton("Перенести в жалобы 😒", callback_data=f'profile_complain:{str(user.profile.id)}')]]
     )
     image, caption = await show_profile(user, context)
     await context.bot.send_photo(

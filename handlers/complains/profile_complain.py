@@ -1,4 +1,5 @@
 import logging
+import random
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -8,7 +9,7 @@ from telegram.error import BadRequest
 from telegram.ext import (
     ContextTypes,
 )
-from core.config import COMPLAIN_TOPIC_ID, TELEGRAM_ADMIN_GROUP_ID
+from core.config import ADMINS, COMPLAIN_TOPIC_ID, TELEGRAM_ADMIN_GROUP_ID
 from db.repositories.profiles import ProfilesRepository
 from db.repositories.complains import ComplainRepository
 from db.repositories.users import UsersRepository
@@ -19,6 +20,7 @@ from handlers.show_profile import show_profile
 from handlers.common.users import get_user
 from models.complain import ComplainCreate, ComplainStatus, ComplainUpdate
 from models.user import UserPublic
+from utils.utils import escape_markdownv2
 
 
 logger = logging.getLogger()
@@ -44,7 +46,7 @@ async def profile_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # Отправка жалобы
-    profile_repo = get_repository(ProfilesRepository, context)
+    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
     complains_repo = get_repository(ComplainRepository, context)
 
     complainant = await profile_repo.get_profile_by_user_id(
@@ -66,8 +68,8 @@ async def profile_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     else:
         user_repo = get_repository(UsersRepository, context)
-        user = await user_repo.get_user_by_id(id=accused.user_id)
-        image, caption = await show_profile(user, context)
+        accused_user = await user_repo.get_user_by_id(id=accused.user_id)
+        image, caption = await show_profile(accused_user, context)
         options = [
             [
                 InlineKeyboardButton(
@@ -97,6 +99,22 @@ async def profile_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
             accused=accused.id,
         )
         await complains_repo.create_complain(complain_create=complain_create)
+
+        # Связь с админом
+        selected_admin = random.choice(ADMINS)
+        options = [
+            [
+                InlineKeyboardButton("✨ Связаться с администратором", url=f'https://t.me/{selected_admin}'),
+            ]
+        ]
+        keyboard = [*options]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await context.bot.send_message(
+            chat_id=user.id,
+            text=f'Любые подробности по жалобе на "{escape_markdownv2(accused.name)}, {escape_markdownv2(accused.city)}" Вы можете написать админиcтратору\!',
+            reply_markup=reply_markup,
+            parse_mode="MarkdownV2",
+        )
 
         await context.bot.answer_callback_query(
             callback_query_id=update.callback_query.id,
