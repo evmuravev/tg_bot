@@ -66,7 +66,7 @@ async def date_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.answer_callback_query(
             callback_query_id=update.callback_query.id,
             show_alert=True,
-            text='Ваша жалоба уже отправлена!',
+            text='Ваша жалоба уже досталвена! Администраторы разбираются!',
         )
     else:
         user_repo: UsersRepository = get_repository(UsersRepository, context)
@@ -127,7 +127,7 @@ async def date_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.answer_callback_query(
             callback_query_id=update.callback_query.id,
             show_alert=True,
-            text='Ваша жалоба отправлена!',
+            text='Ваша жалоба доставлена администраторам! Скоро они со всем разберутся 🫡',
         )
 
 

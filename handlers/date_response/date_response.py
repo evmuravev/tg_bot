@@ -101,5 +101,5 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.answer_callback_query(
                 callback_query_id=update.callback_query.id,
                 show_alert=True,
-                text='Ваш отклик с вашим контактом доставлен!\n Теперь пользователь может вам написать🤞',
+                text='Ваш отклик с вашим контактом доставлен!\nТеперь пользователь может вам написать🤞',
             )

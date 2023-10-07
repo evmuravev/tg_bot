@@ -64,7 +64,7 @@ async def profile_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.answer_callback_query(
             callback_query_id=update.callback_query.id,
             show_alert=True,
-            text='Ваша жалоба уже отправлена! Администраторы разбираются! 👮‍♂️',
+            text='Ваша жалоба уже доставлена! Администраторы разбираются! 👮‍♂️',
         )
     else:
         user_repo = get_repository(UsersRepository, context)

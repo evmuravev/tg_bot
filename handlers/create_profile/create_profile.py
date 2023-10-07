@@ -116,6 +116,7 @@ CREATE_PROFILE_CONVERSATION = ConversationHandler(
         STEPS['FINAL_STEP']: [
             CallbackQueryHandler(final_step.start_over, pattern='start_over'),
             CallbackQueryHandler(final_step.final_step, pattern='final_step'),
+            CommandHandler('back', final_step.final_back),
         ],
     },
 
