@@ -131,9 +131,10 @@ def create_date_offers_table() -> None:
 def create_date_responses_table() -> None:
     op.create_table(
         "date_responses",
-        sa.Column("inviter", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
-        sa.Column("responder", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
+        sa.Column("inviter", sa.BigInteger, sa.ForeignKey("profiles.id", ondelete="CASCADE"), index=True, nullable=False),
+        sa.Column("responder", sa.BigInteger, sa.ForeignKey("profiles.id", ondelete="CASCADE"), index=True, nullable=False),
         sa.Column("message_id", sa.Text, index=True, nullable=True),
+        sa.Column("is_clicked_through", sa.Boolean(), nullable=True),
         *timestamps(indexed=True),
     )
     op.execute(
@@ -151,8 +152,8 @@ def create_complains_table() -> None:
     op.create_table(
         "complains",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("complainant", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
-        sa.Column("accused", sa.BigInteger, sa.ForeignKey("profiles.id"), index=True, nullable=False),
+        sa.Column("complainant", sa.BigInteger, sa.ForeignKey("profiles.id", ondelete="CASCADE"), index=True, nullable=False),
+        sa.Column("accused", sa.BigInteger, sa.ForeignKey("profiles.id", ondelete="CASCADE"), index=True, nullable=False),
         sa.Column("message_id", sa.Text, index=True, nullable=True),
         sa.Column("status", sa.Text, index=True, nullable=True),
         *timestamps(indexed=True),

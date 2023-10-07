@@ -21,6 +21,16 @@ GET_DATE_RESPONSES_BY_RESPONDER_QUERY = """
     ;
 """
 
+UPDATE_DATE_RESPONSE_QUERY = '''
+    UPDATE date_responses
+    SET "is_clicked_through" = TRUE,
+    WHERE
+        inviter  = :inviter_id
+        responder  = :responder_id
+        message_id  = :message_id
+    RETURNING *;
+'''
+
 
 class DateResponseRepository(BaseRepository):
     def __init__(self, db: Database) -> None:
@@ -70,3 +80,21 @@ class DateResponseRepository(BaseRepository):
                 id=date_response.responder
             )
         )
+
+    async def set_is_clicked_through(
+        self, *,
+        inviter_id: int,
+        responder_id: int,
+        message_id: str,
+    ) -> DateResponseInDB:
+
+        updated_date_response = await self.db.fetch_one(
+            query=UPDATE_DATE_RESPONSE_QUERY,
+            values={
+                "inviter_id": inviter_id,
+                "responder_id": responder_id,
+                "message_id": message_id,
+            },
+        )
+
+        return DateResponseInDB(**updated_date_response)

@@ -76,7 +76,11 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
             image, caption = await show_profile(user, context)
             options = [
                 [
-                    InlineKeyboardButton("✨ Начать общение!", url=f'https://t.me/{update.effective_user.username}'),
+                    InlineKeyboardButton(
+                        "✨ Начать общение!",
+                        url=f'https://t.me/{update.effective_user.username}',
+                        callback_data=f'is_clicked_through:{str(inviter.id)}:{str(responder.id)}:{str(update.effective_message.id)}'
+                    ),
                     InlineKeyboardButton("Пожаловаться 😒", callback_data=f'profile_complain:{str(responder.id)}'),
                 ]
             ]
@@ -103,3 +107,17 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 show_alert=True,
                 text='Ваш отклик с вашим контактом доставлен пользователю!💌\nТеперь он может вам написать🤞',
             )
+
+
+async def date_response_clicked_through(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    date_response_repo: DateResponseRepository = get_repository(DateResponseRepository, context)
+
+    inviter_id = int(update.callback_query.data.split(':')[1])
+    responder_id = int(update.callback_query.data.split(':')[2])
+    message_id = update.callback_query.data.split(':')[3]
+
+    await date_response_repo.set_is_clicked_through(
+        inviter_id=inviter_id,
+        responder_id=responder_id,
+        message_id=message_id,
+    )
