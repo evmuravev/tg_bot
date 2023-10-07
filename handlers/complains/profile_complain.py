@@ -64,7 +64,7 @@ async def profile_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.answer_callback_query(
             callback_query_id=update.callback_query.id,
             show_alert=True,
-            text='Ваша жалоба уже отправлена!',
+            text='Ваша жалоба уже отправлена! Администраторы разбираются! 👮‍♂️',
         )
     else:
         user_repo = get_repository(UsersRepository, context)
@@ -119,7 +119,7 @@ async def profile_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.answer_callback_query(
             callback_query_id=update.callback_query.id,
             show_alert=True,
-            text='Ваша жалоба отправлена!',
+            text='Ваша жалоба доставлена администраторам! Скоро они со всем разберутся 🫡',
         )
 
 
@@ -137,7 +137,7 @@ async def profile_complain_decline(update: Update, context: ContextTypes.DEFAULT
         chat_id=complainant_profile.user_id,
         text=f'Ваша жалоба на профиль "{accused_profile.name}, {accused_profile.city}" \
 была рассмотрена, но ничего предосудительного мы не обнаружили! \
-Спасибо за бдительность!',
+Спасибо за бдительность! 🫡',
     )
 
     # Закрываем жалобу - меням статус в БД
@@ -195,7 +195,7 @@ async def profile_complain_approve(update: Update, context: ContextTypes.DEFAULT
         chat_id=complainant_profile.user_id,
         text=f'Ваша жалоба на профиль "{accused_profile.name}, {accused_profile.city}" \
 была рассмотрена - нарушитель наказан! \
-Спасибо за бдительность!',
+Спасибо за бдительность! 🫡',
     )
 
     # Закрываем жалобу - меням статус в БД
