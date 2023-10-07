@@ -6,8 +6,8 @@ from models.date_response import DateResponseCreate, DateResponsePublic, DateRes
 
 
 CREATE_DATE_RESPONSE = """
-    INSERT INTO date_responses (inviter, responder, message_id)
-    VALUES (:inviter, :responder, :message_id)
+    INSERT INTO date_responses (inviter, responder, message_id, is_clicked_through)
+    VALUES (:inviter, :responder, :message_id, :is_clicked_through)
     RETURNING *;
 """
 
@@ -23,7 +23,7 @@ GET_DATE_RESPONSES_BY_RESPONDER_QUERY = """
 
 UPDATE_DATE_RESPONSE_QUERY = '''
     UPDATE date_responses
-    SET "is_clicked_through" = TRUE,
+    SET "is_clicked_through" = TRUE
     WHERE
         inviter  = :inviter_id
         responder  = :responder_id
