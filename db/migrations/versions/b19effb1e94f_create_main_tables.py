@@ -134,7 +134,6 @@ def create_date_responses_table() -> None:
         sa.Column("inviter", sa.BigInteger, sa.ForeignKey("profiles.id", ondelete="CASCADE"), index=True, nullable=False),
         sa.Column("responder", sa.BigInteger, sa.ForeignKey("profiles.id", ondelete="CASCADE"), index=True, nullable=False),
         sa.Column("message_id", sa.Text, index=True, nullable=True),
-        sa.Column("is_clicked_through", sa.Boolean(), nullable=True),
         *timestamps(indexed=True),
     )
     op.execute(

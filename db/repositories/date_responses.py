@@ -6,8 +6,8 @@ from models.date_response import DateResponseCreate, DateResponsePublic, DateRes
 
 
 CREATE_DATE_RESPONSE = """
-    INSERT INTO date_responses (inviter, responder, message_id, is_clicked_through)
-    VALUES (:inviter, :responder, :message_id, :is_clicked_through)
+    INSERT INTO date_responses (inviter, responder, message_id)
+    VALUES (:inviter, :responder, :message_id)
     RETURNING *;
 """
 
@@ -20,16 +20,6 @@ GET_DATE_RESPONSES_BY_RESPONDER_QUERY = """
 
     ;
 """
-
-UPDATE_DATE_RESPONSE_QUERY = '''
-    UPDATE date_responses
-    SET "is_clicked_through" = TRUE
-    WHERE
-        inviter  = :inviter_id
-        responder  = :responder_id
-        message_id  = :message_id
-    RETURNING *;
-'''
 
 
 class DateResponseRepository(BaseRepository):
@@ -80,21 +70,3 @@ class DateResponseRepository(BaseRepository):
                 id=date_response.responder
             )
         )
-
-    async def set_is_clicked_through(
-        self, *,
-        inviter_id: int,
-        responder_id: int,
-        message_id: str,
-    ) -> DateResponseInDB:
-
-        updated_date_response = await self.db.fetch_one(
-            query=UPDATE_DATE_RESPONSE_QUERY,
-            values={
-                "inviter_id": inviter_id,
-                "responder_id": responder_id,
-                "message_id": message_id,
-            },
-        )
-
-        return DateResponseInDB(**updated_date_response)

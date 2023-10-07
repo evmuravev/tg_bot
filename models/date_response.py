@@ -8,7 +8,6 @@ class DateResponseBase(CoreModel):
     inviter: int
     responder: int
     message_id: str
-    is_clicked_through: Optional[bool] = False
 
 
 class DateResponseCreate(DateResponseBase):
