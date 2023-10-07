@@ -22,6 +22,7 @@ DATE_TOPIC_ID = config("DATE_TOPIC_ID", cast=str)
 TELEGRAM_ADMIN_GROUP_ID = config("TELEGRAM_ADMIN_GROUP_ID", cast=str)
 COMPLAIN_TOPIC_ID = config("COMPLAIN_TOPIC_ID", cast=str)
 NEW_PROFILE_TOPIC_ID = config("NEW_PROFILE_TOPIC_ID", cast=str)
+SECRET_TOKEN = config("SECRET_TOKEN", cast=str)
 
 DATABASE_URL = config(
   "DATABASE_URL",

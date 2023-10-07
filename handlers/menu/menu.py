@@ -22,7 +22,7 @@ async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ],
             [InlineKeyboardButton("❌ Удалить данные", callback_data='delete_profile')],
             [InlineKeyboardButton("💘 Назначить свидание", callback_data='date_offer')],
-            [InlineKeyboardButton("⏩ Перейти в группу", url='https://t.me/+-LDB4eMeT202YmIy')],
+            [InlineKeyboardButton("⏩ Перейти в группу", url='https://t.me/dating_studio')],
         ]
     else:
         profile = [

@@ -8,7 +8,8 @@ from handlers.common.users import get_user
 from handlers.menu import menu
 from handlers.show_profile import show_profile_handler, show_profile
 from handlers.create_profile.common import (
-    STEPS
+    STEPS,
+    get_previous_step
 )
 from handlers.create_profile.profile_parts.name import set_name_step
 from models.profile import ProfileBase, ProfileStatus, ProfileUpdate
@@ -36,7 +37,7 @@ async def set_final_step(
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text="*Все почти готово\! Так выглядит ваш профиль\. Завершаем создание профиля\?*",
+        text="*Все почти готово\! Так выглядит ваш профиль\. Завершаем создание профиля\?*\n ↪/back",
         reply_markup=reply_markup,
         parse_mode="MarkdownV2",
     )
@@ -60,6 +61,11 @@ async def start_over(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text='Заполненный профиль успешно очищен, начинаем сначала :)',
     )
     return await set_name_step(update, context)
+
+
+async def final_back(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    previous_step = get_previous_step(STEPS['FINAL_STEP'])
+    return await previous_step(update, context)
 
 
 async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
