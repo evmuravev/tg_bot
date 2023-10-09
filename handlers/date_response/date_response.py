@@ -76,7 +76,10 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
             image, caption = await show_profile(user, context)
             options = [
                 [
-                    InlineKeyboardButton("✨ Начать общение!", url=f'https://t.me/{update.effective_user.username}'),
+                    InlineKeyboardButton(
+                        "✨ Начать общение!",
+                        callback_data=f'is_clicked_through:{str(inviter.id)}:{str(responder.id)}:{str(update.effective_message.id)}'
+                    ),
                     InlineKeyboardButton("Пожаловаться 😒", callback_data=f'profile_complain:{str(responder.id)}'),
                 ]
             ]
@@ -85,8 +88,8 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_photo(
                 chat_id=inviter.user_id,
                 photo=image.file_id,
-                caption='Новый отклик\! ' + caption +'\n\n _Если хотите начать общение, нажмите нужную кнопку!\n\
-...Не забудьте напомнить, на какое свидание вы приглашали..._😉',
+                caption='Новый отклик\! ' + caption +'\n\n _Если хотите начать общение, нажмите нужную кнопку\!\n\
+Не забудьте напомнить, на какое свидание вы приглашали\.\.\._😉',
                 parse_mode="MarkdownV2",
                 reply_markup=reply_markup
             )
@@ -104,3 +107,23 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 show_alert=True,
                 text='Ваш отклик с вашим контактом доставлен пользователю!💌\nТеперь он может вам написать🤞',
             )
+
+
+async def date_response_clicked_through(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    date_response_repo: DateResponseRepository = get_repository(DateResponseRepository, context)
+
+    inviter_id = int(update.callback_query.data.split(':')[1])
+    responder_id = int(update.callback_query.data.split(':')[2])
+    message_id = update.callback_query.data.split(':')[3]
+
+    await date_response_repo.set_is_clicked_through(
+        inviter_id=inviter_id,
+        responder_id=responder_id,
+        message_id=message_id,
+    )
+    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
+    user_repo: UsersRepository = get_repository(UsersRepository, context)
+    responder = await profile_repo.get_profile_by_id(id=int(responder_id))
+    responder_user = await user_repo.get_user_by_id(id=responder.user_id)
+    link = f't.me/{responder_user.username}'
+    await update.callback_query.message.reply_text(f"{responder.name}, {responder.age} лет: {link}")
