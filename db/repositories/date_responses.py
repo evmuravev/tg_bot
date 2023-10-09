@@ -86,9 +86,9 @@ class DateResponseRepository(BaseRepository):
         inviter_id: int,
         responder_id: int,
         message_id: str,
-    ) -> DateResponseInDB:
+    ) -> None:
 
-        updated_date_response = await self.db.fetch_one(
+        await self.db.fetch_one(
             query=UPDATE_DATE_RESPONSE_QUERY,
             values={
                 "inviter_id": inviter_id,
@@ -96,5 +96,3 @@ class DateResponseRepository(BaseRepository):
                 "message_id": message_id,
             },
         )
-
-        return DateResponseInDB(**updated_date_response)
