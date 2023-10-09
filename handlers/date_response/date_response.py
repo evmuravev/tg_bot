@@ -85,7 +85,8 @@ async def date_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_photo(
                 chat_id=inviter.user_id,
                 photo=image.file_id,
-                caption='Новый отклик\! ' + caption,
+                caption='Новый отклик\! ' + caption +'\n\n _Если хотите начать общение, нажмите нужную кнопку!\n\
+...Не забудьте напомнить, на какое свидание вы приглашали..._😉',
                 parse_mode="MarkdownV2",
                 reply_markup=reply_markup
             )
