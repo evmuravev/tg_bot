@@ -119,7 +119,7 @@ async def date_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
         await context.bot.send_message(
             chat_id=user.id,
-            text=f'Любые подробности по жалобе на "{escape_markdownv2(accused.name)}, {escape_markdownv2(accused.city)}" Вы можете написать админиcтратору\!',
+            text=f'Любые подробности по жалобе на "{escape_markdownv2(accused.name)}, {accused.age} лет, {escape_markdownv2(accused.city)}" Вы можете написать админиcтратору\!',
             reply_markup=reply_markup,
             parse_mode="MarkdownV2",
         )
@@ -132,7 +132,7 @@ async def date_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def date_complain_decline(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    profile_repo = get_repository(ProfilesRepository, context)
+    profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
     accused_id = update.callback_query.data.split(':')[1]
     complainant_id = update.callback_query.data.split(':')[2]
     complainant_profile = await profile_repo.get_profile_by_id(
@@ -143,7 +143,7 @@ async def date_complain_decline(update: Update, context: ContextTypes.DEFAULT_TY
     )
     await context.bot.send_message(
         chat_id=complainant_profile.user_id,
-        text=f'Ваша жалоба на свидание "{accused_profile.name}, {accused_profile.city}" \
+        text=f'Ваша жалоба на свидание "{accused_profile.name}, {accused_profile.age} лет, {accused_profile.city}" \
 была рассмотрена, но ничего предосудительного мы не обнаружили! \
 Спасибо за бдительность!',
     )
@@ -213,7 +213,7 @@ async def date_complain_approve(update: Update, context: ContextTypes.DEFAULT_TY
     # Обвинителю выписываем медаль
     await context.bot.send_message(
         chat_id=complainant_profile.user_id,
-        text=f'Ваша жалоба на свидание от "{accused_profile.name}, {accused_profile.city}" \
+        text=f'Ваша жалоба на свидание от "{accused_profile.name}, {accused_profile.age} лет, {accused_profile.city}" \
 была рассмотрена - нарушитель наказан! \
 Спасибо за бдительность!',
     )
