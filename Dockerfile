@@ -10,7 +10,6 @@ RUN apt-get update \
   && apt-get clean
 
 # install python dependencies
-COPY . /bot
 RUN pip install --upgrade pip \
   && pip install -r requirements.txt
   
