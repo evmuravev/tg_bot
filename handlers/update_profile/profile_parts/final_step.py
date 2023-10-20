@@ -29,7 +29,7 @@ async def set_final_step(
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text="*Так выглядит ваш обновленный профиль\. Нажмите далее...",
+        text="*Так выглядит ваш обновленный профиль\. Нажмите далее\.\.\.",
         reply_markup=reply_markup,
         parse_mode="MarkdownV2",
     )
