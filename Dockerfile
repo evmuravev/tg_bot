@@ -10,9 +10,10 @@ RUN apt-get update \
   && apt-get clean
 
 # install python dependencies
+COPY ./requirements.txt /bot
 RUN pip install --upgrade pip \
   && pip install -r requirements.txt
   
-RUN chmod +x /bot/main.py
+# RUN chmod +x /bot/main.py
 
-CMD python /bot/main.py;
+# CMD python /bot/main.py;
