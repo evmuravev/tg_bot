@@ -20,7 +20,7 @@ async def set_name_step(
 ):
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text='*Напишите Ваше имя*\n_\(пожауйста, не используйте ники, кличики и т\.п\.\)_',
+        text='*Напишите Ваше имя*\n_\(пожалуйста, не используйте ники, кличики и т\.п\.\)_',
         parse_mode="MarkdownV2",
     )
     return step

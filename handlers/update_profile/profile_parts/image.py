@@ -52,7 +52,7 @@ async def set_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text='Великолепно выглядите\!\n_\(пожауйста, не удаляйте фото из переписки с ботом\)_',
+        text='Великолепно выглядите\!\n_\(пожалуйста, не удаляйте фото из переписки с ботом\)_',
         parse_mode="MarkdownV2",
         read_timeout=60,
         write_timeout=60,
