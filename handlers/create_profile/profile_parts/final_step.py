@@ -95,7 +95,7 @@ async def final_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text='Теперь вы можете всё! 💪',
+        text='Теперь вы можете всё! 💪 Назначайте свидания и вас заметят!',
     )
     await menu.menu(update, context)
 
