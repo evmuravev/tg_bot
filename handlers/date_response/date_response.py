@@ -124,6 +124,9 @@ async def date_response_clicked_through(update: Update, context: ContextTypes.DE
     profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
     user_repo: UsersRepository = get_repository(UsersRepository, context)
     responder = await profile_repo.get_profile_by_id(id=int(responder_id))
-    responder_user = await user_repo.get_user_by_id(id=responder.user_id)
-    link = f't.me/{responder_user.username}'
-    await update.callback_query.message.reply_text(f"{responder.name}, {responder.age} лет: {link}")
+    if responder:
+        responder_user = await user_repo.get_user_by_id(id=responder.user_id)
+        link = f't.me/{responder_user.username}'
+        await update.callback_query.message.reply_text(f"{responder.name}, {responder.age} лет: {link}")
+    else:
+        await update.callback_query.message.reply_text(f"К сожалению, человек удалил свой профиль...")
