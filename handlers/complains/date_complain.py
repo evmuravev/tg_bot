@@ -18,7 +18,8 @@ from db.tasks import get_repository
 
 from handlers.common.users import get_user
 from handlers.delete_profile.delete_profile import delete_profile_and_dates
-from handlers.show_date_offer import show_date_offer
+from handlers.show_date_offer import get_date_offer_description
+from handlers.show_profile.show_profile import get_profile_description
 from models.complain import ComplainCreate, ComplainStatus
 from models.date_offer import DateOfferPublic
 from models.user import UserPublic
@@ -72,7 +73,15 @@ async def date_complain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_repo: UsersRepository = get_repository(UsersRepository, context)
         accused_user = await user_repo.get_user_by_id(id=accused.user_id)
 
-        image, caption, date_offer = await show_date_offer(accused_user, context)
+        date_offer_repo = get_repository(DateOffersRepository, context)
+        date_offer: DateOfferPublic = await date_offer_repo.get_last_date_offer_by_profile_id(
+            profile_id=accused_user.profile.id
+        )
+        profile = await get_profile_description(accused_user.profile)
+        date_offfer_description = await get_date_offer_description(date_offer)
+        caption = profile.caption + date_offfer_description
+        image = await context.bot.get_file(profile.image)
+
         options = [
             [
                 InlineKeyboardButton(
