@@ -1,5 +1,6 @@
 import logging
 import random
+from typing import List
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -19,6 +20,7 @@ from handlers.show_profile import show_profile
 
 from handlers.common.users import get_user
 from models.complain import ComplainCreate, ComplainStatus, ComplainUpdate
+from models.profile import ProfileInDB
 from models.user import UserPublic
 from utils.utils import escape_markdownv2
 
@@ -163,50 +165,47 @@ async def profile_complain_decline(update: Update, context: ContextTypes.DEFAULT
 async def profile_complain_approve(update: Update, context: ContextTypes.DEFAULT_TYPE):
     profile_repo: ProfilesRepository = get_repository(ProfilesRepository, context)
     accused_id = update.callback_query.data.split(':')[1]
-    complainant_id = update.callback_query.data.split(':')[2]
-    complainant_profile = await profile_repo.get_profile_by_id(
-        id=int(complainant_id)
-    )
     accused_profile = await profile_repo.get_profile_by_id(
         id=int(accused_id)
     )
-    # Удаляем профиль и свидания
-    user_repo: UsersRepository = get_repository(UsersRepository, context)
-    user = await user_repo.get_user_by_id(id=accused_profile.user_id)
-    await delete_profile_and_dates(user, context)
+    if accused_profile:
+        # Удаляем профиль и свидания
+        user_repo: UsersRepository = get_repository(UsersRepository, context)
+        user = await user_repo.get_user_by_id(id=accused_profile.user_id)
+        await delete_profile_and_dates(user, context)
 
-    # Обвиняемому напихиваем в панамку
-    updated_user = await user_repo.inc_num_of_complains(user=user)
-    # Если панамка не выдерживает, то в бан!
-    if updated_user.num_of_complains > 1:
-        await user_repo.update_is_banned(user=updated_user)
-        await context.bot.send_message(
-            chat_id=accused_profile.user_id,
-            text='Нам очень жаль, за повторное нарушение вы были забанены!',
-        )
-    else:
-        await context.bot.send_message(
-            chat_id=accused_profile.user_id,
-            text='За неподобающее содержание Ваше свидание и профиль были удалены! Повторное нарушение приведет вас к бану!',
-        )
+        # Обвиняемому выписываем нарушение
+        updated_user = await user_repo.inc_num_of_complains(user=user)
+        # Если больше 1, то в бан!
+        if updated_user.num_of_complains > 1:
+            await user_repo.update_is_banned(user=updated_user)
+            await context.bot.send_message(
+                chat_id=accused_profile.user_id,
+                text='Нам очень жаль, за повторное нарушение вы были забанены!',
+            )
+        else:
+            await context.bot.send_message(
+                chat_id=accused_profile.user_id,
+                text='За неподобающее содержание Ваше свидание и профиль были удалены! Повторное нарушение приведет вас к бану!',
+            )
 
-    # Обвинителю выписываем медаль
-    await context.bot.send_message(
-        chat_id=complainant_profile.user_id,
-        text=f'Ваша жалоба на профиль "{accused_profile.name}, {accused_profile.age} лет, {accused_profile.city}" \
-была рассмотрена - нарушитель наказан! \
-Спасибо за бдительность! 🫡',
-    )
+        # Отвечаем обвинителям
+        complains_repo: ComplainRepository = get_repository(ComplainRepository, context)
+        all_complains = await complains_repo.get_all_complains(accused_id=int(accused_id))
+        for complain in all_complains:
+            complainant_profile = await profile_repo.get_profile_by_id(
+                id=complain.complainant
+            )
+            await context.bot.send_message(
+                chat_id=complainant_profile.user_id,
+                text=f'Ваша жалоба на профиль "{accused_profile.name}, {accused_profile.age} лет, {accused_profile.city}" \
+        была рассмотрена - нарушитель наказан! \
+        Спасибо за бдительность! 🫡',
+            )
 
-    # Закрываем жалобу - меням статус в БД
-    complains_repo: ComplainRepository = get_repository(ComplainRepository, context)
-    complain = await complains_repo.get_complain(
-        complainant_id=int(complainant_id),
-        accused_id=int(accused_id),
-    )
-    if complain:
-        complain_update = complain.copy(update={'status': ComplainStatus.approved})
-        await complains_repo.update_status_complain(complain_update=complain_update)
+            # Закрываем жалобу - меням статус в БД
+            complain_update = complain.copy(update={'status': ComplainStatus.approved})
+            await complains_repo.update_status_complain(complain_update=complain_update)
 
     # Удаляем сообщение из админской группы
     try:

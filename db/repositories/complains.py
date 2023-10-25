@@ -11,7 +11,6 @@ CREATE_DATE_COMPLAIN = """
     RETURNING *;
 """
 
-
 GET_NEW_COMPLAIN = """
     SELECT *
     FROM complains
@@ -21,12 +20,19 @@ GET_NEW_COMPLAIN = """
     ;
 """
 
-
 UPDATE_COMPLAIN_STATUS = """
     UPDATE complains
     SET status = :status
     WHERE id = :id
     RETURNING *;
+"""
+
+GET_ALL_COMPLAINANTS_QUERY = """
+    SELECT complainant
+    FROM complains
+    WHERE accused = :accused
+        AND status = 'new'
+    ;
 """
 
 
@@ -74,3 +80,16 @@ class ComplainRepository(BaseRepository):
             }
         )
         return ComplainInDB(**complain)
+
+    async def get_all_complains(
+            self, *,
+            accused_id: int,
+    ) -> List[ComplainInDB]:
+        complains = await self.db.fetch_all(
+            query=GET_ALL_COMPLAINANTS_QUERY,
+            values={
+                "accused": accused_id,
+            }
+        )
+        if complains:
+            return [ComplainInDB(**complain) for complain in complains]
