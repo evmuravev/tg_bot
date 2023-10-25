@@ -27,8 +27,8 @@ UPDATE_COMPLAIN_STATUS = """
     RETURNING *;
 """
 
-GET_ALL_COMPLAINANTS_QUERY = """
-    SELECT complainant
+GET_ALL_COMPLAINS_QUERY = """
+    SELECT *
     FROM complains
     WHERE accused = :accused
         AND status = 'new'
@@ -86,7 +86,7 @@ class ComplainRepository(BaseRepository):
             accused_id: int,
     ) -> List[ComplainInDB]:
         complains = await self.db.fetch_all(
-            query=GET_ALL_COMPLAINANTS_QUERY,
+            query=GET_ALL_COMPLAINS_QUERY,
             values={
                 "accused": accused_id,
             }
