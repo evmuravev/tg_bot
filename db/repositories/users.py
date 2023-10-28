@@ -99,8 +99,10 @@ class UsersRepository(BaseRepository):
             query=UPDATE_USERNAME_QUERY,
             values={"user_id": user.id, "username": user.username},
         )
+        if updated_user:
+            user = UserInDB(**updated_user)
+            return await self.populate_user(user=user)
 
-        return UserInDB(**updated_user)
 
     async def update_is_banned(self, *, user: UserInDB) -> UserInDB:
         updated_user = await self.db.fetch_one(
