@@ -111,7 +111,7 @@ async def send_city_page(
     query = update.callback_query
     region = context.user_data['selected_region'].replace('-', r'\-')
     await query.edit_message_text(
-        text=f"_Выбранный регион {region}\._\nТеперь выберите город:",
+        text=f"_Выбранный регион {escape_markdownv2(region)}\._\nТеперь выберите город:",
         reply_markup=city_markup,
         parse_mode="MarkdownV2"
     )
