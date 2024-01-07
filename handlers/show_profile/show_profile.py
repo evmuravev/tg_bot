@@ -44,7 +44,7 @@ async def get_profile_description(user_profile: ProfilePublic):
     profile.bio = escape_markdownv2(profile.bio)
     if profile.city != profile.region:
         profile.city = escape_markdownv2(
-            f"#{profile.city.replace('-','_').replace(' ','_')} #{profile.region.replace('-','_').replace(' ','_')}"
+            f"#{profile.city.replace('-','_').replace(' ','_')} #{profile.region.replace('-','_').replace(' ','_').replace('(','_').replace(')','')}"
         )
     else:
         profile.city = escape_markdownv2(f"#{profile.city.replace('-','_').replace(' ','_')}")
