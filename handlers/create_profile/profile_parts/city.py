@@ -93,7 +93,7 @@ async def send_city_page(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     city_keyboard.append(navigation)
     city_markup = InlineKeyboardMarkup(city_keyboard)
     query = update.callback_query
-    region = context.user_data['selected_region'].replace('-', r'\-')
+    region = context.user_data['selected_region'].replace('-', '_')
     await query.edit_message_text(
         text=f"_Выбранный регион {escape_markdownv2(region)}\._\nТеперь выберите город:",
         reply_markup=city_markup,
